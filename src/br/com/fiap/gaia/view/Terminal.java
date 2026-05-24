@@ -27,94 +27,133 @@ public class Terminal {
 
         System.out.println();
         System.out.println("Escolha seu principal interesse sustentável:");
-        System.out.println("energia");
-        System.out.println("água");
-        System.out.println("reciclagem");
-        System.out.println("transporte");
-        System.out.print("Digite sua escolha: ");
-        String interesse = scanner.nextLine();
+        System.out.println("1 - Energia");
+        System.out.println("2 - Água");
+        System.out.println("3 - Reciclagem");
+        System.out.println("4 - Transporte");
+        System.out.print("Digite o número da opção: ");
+        int opcaoInteresse = Integer.parseInt(scanner.nextLine());
+
+        String interesse;
+
+        if (opcaoInteresse == 1) {
+            interesse = "energia";
+        } else if (opcaoInteresse == 2) {
+            interesse = "água";
+        } else if (opcaoInteresse == 3) {
+            interesse = "reciclagem";
+        } else if (opcaoInteresse == 4) {
+            interesse = "transporte";
+        } else {
+            interesse = "geral";
+        }
 
         Usuario usuario = new Usuario(nome, email, interesse);
         Avatar avatar = new Avatar("Gaia", "Motivadora");
         Acessorio acessorio = new Acessorio("Boné Gaia", "Natureza", 30);
-
-        System.out.println();
-        System.out.println("-------------------------");
-        avatar.apresentarUsuario(usuario);
-
-        System.out.println("-------------------------");
-        System.out.println("Gaia analisou seu interesse principal...");
-        MissaoSustentavel missao = avatar.sugerirMissao(usuario);
-        missao.exibirMissao();
-
-        System.out.println("-------------------------");
-        System.out.print("Você deseja concluir essa missão agora? Digite sim ou nao: ");
-        String respostaMissao = scanner.nextLine();
-
-        if (respostaMissao.equalsIgnoreCase("sim")) {
-            missao.concluirMissao(usuario);
-
-            System.out.println("-------------------------");
-            String mensagem = avatar.gerarMensagemMotivacional(usuario);
-            System.out.println(mensagem);
-
-            System.out.println("-------------------------");
-            ConteudoGerado conteudo = new ConteudoGerado("Post automático", missao.getCategoria());
-            conteudo.gerarPostAutomatico(usuario, missao);
-            conteudo.exibirConteudo();
-
-        } else {
-            System.out.println("Tudo bem! A missão continuará pendente para você concluir depois.");
-        }
-
-        System.out.println("-------------------------");
         NotificacaoInteligente notificacao = new NotificacaoInteligente(
                 "Lembrete Gaia",
                 "Progresso do usuário"
         );
 
-        notificacao.gerarNotificacao(usuario);
-        notificacao.exibirNotificacao();
+        MissaoSustentavel missao = null;
+        ConteudoGerado conteudo = null;
 
-        System.out.println("-------------------------");
-        System.out.println("Seu progresso atual:");
-        usuario.exibirProgresso();
+        int opcao = -1;
 
-        System.out.println("-------------------------");
-        System.out.println("A Gaia encontrou um acessório disponível:");
-        acessorio.exibirAcessorio();
+        while (opcao != 0) {
 
-        System.out.println("-------------------------");
-        System.out.print("Você deseja comprar esse acessório? Digite sim ou nao: ");
-        String respostaAcessorio = scanner.nextLine();
+            System.out.println();
+            System.out.println("==================================");
+            System.out.println("              MENU");
+            System.out.println("==================================");
+            System.out.println("1 - Conversar com a Gaia");
+            System.out.println("2 - Receber missão sustentável");
+            System.out.println("3 - Ver missão atual");
+            System.out.println("4 - Concluir missão");
+            System.out.println("5 - Gerar post automático");
+            System.out.println("6 - Ver notificação inteligente");
+            System.out.println("7 - Comprar acessório");
+            System.out.println("8 - Equipar acessório");
+            System.out.println("9 - Ver progresso");
+            System.out.println("10 - Ver acessório");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha uma opção: ");
 
-        if (respostaAcessorio.equalsIgnoreCase("sim")) {
-            usuario.comprarAcessorio(acessorio);
+            opcao = Integer.parseInt(scanner.nextLine());
 
-            System.out.println("-------------------------");
-            System.out.print("Deseja equipar esse acessório na Gaia? Digite sim ou nao: ");
-            String respostaTroca = scanner.nextLine();
+            System.out.println();
 
-            if (respostaTroca.equalsIgnoreCase("sim")) {
-                avatar.trocarAcessorio(acessorio);
-            } else {
-                System.out.println("Acessório comprado, mas ainda não foi equipado.");
+            switch (opcao) {
+
+                case 1:
+                    avatar.apresentarUsuario(usuario);
+                    break;
+
+                case 2:
+                    missao = avatar.sugerirMissao(usuario);
+                    System.out.println("A Gaia analisou seu interesse principal e sugeriu uma missão:");
+                    missao.exibirMissao();
+                    break;
+
+                case 3:
+                    if (missao != null) {
+                        missao.exibirMissao();
+                    } else {
+                        System.out.println("Você ainda não recebeu nenhuma missão.");
+                        System.out.println("Escolha a opção 2 para receber uma missão sustentável.");
+                    }
+                    break;
+
+                case 4:
+                    if (missao != null) {
+                        missao.concluirMissao(usuario);
+                    } else {
+                        System.out.println("Você ainda não recebeu uma missão.");
+                        System.out.println("Escolha a opção 2 antes de tentar concluir uma missão.");
+                    }
+                    break;
+
+                case 5:
+                    if (missao != null && missao.isConcluida()) {
+                        conteudo = new ConteudoGerado("Post automático", missao.getCategoria());
+                        conteudo.gerarPostAutomatico(usuario, missao);
+                        conteudo.exibirConteudo();
+                    } else {
+                        System.out.println("Você precisa concluir uma missão antes de gerar um post automático.");
+                    }
+                    break;
+
+                case 6:
+                    notificacao.gerarNotificacao(usuario);
+                    notificacao.exibirNotificacao();
+                    break;
+
+                case 7:
+                    usuario.comprarAcessorio(acessorio);
+                    break;
+
+                case 8:
+                    avatar.trocarAcessorio(acessorio);
+                    break;
+
+                case 9:
+                    usuario.exibirProgresso();
+                    break;
+
+                case 10:
+                    acessorio.exibirAcessorio();
+                    break;
+
+                case 0:
+                    System.out.println("Encerrando o Gaia Smart Bot...");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida. Escolha uma opção do menu.");
+                    break;
             }
-
-        } else {
-            System.out.println("Você decidiu não comprar o acessório agora.");
         }
-
-        System.out.println("-------------------------");
-        System.out.println("Resumo final do usuário:");
-        usuario.exibirProgresso();
-
-        System.out.println("-------------------------");
-        System.out.println("Resumo final do acessório:");
-        acessorio.exibirAcessorio();
-
-        System.out.println("-------------------------");
-        System.out.println("Obrigado por usar o Gaia Smart Bot!");
 
         scanner.close();
     }
